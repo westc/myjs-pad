@@ -790,6 +790,12 @@ test('MyJSPad.create() supports every placement', async t => {
   });
 });
 
+test('a script in the body with data-api-only only provides the API', async t => {
+  await t.newPage();
+  await t.setPage('<!DOCTYPE html><html><body><p></p><script src="SRC" data-api-only></script><p></p><script src="SRC" data-api-only="false">console.log(1)</script></body></html>');
+  assert.deepEqual(await t.page.evaluate(() => [typeof MyJSPad, [...document.body.children].map(e => e.tagName)]), ['object', ['P', 'SCRIPT', 'P', 'IFRAME', 'SCRIPT']]);
+});
+
 test('MyJSPad.create() heights default to 100% with a 150px minimum', async t => {
   await t.newPage();
   await t.setPage('<!DOCTYPE html><html><head><script src="SRC"></script></head><body><div id="tall" style="height: 300px"></div><div id="auto"></div><div id="short" style="height: 50px"></div><div id="sized"></div></body></html>');

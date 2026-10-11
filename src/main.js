@@ -956,9 +956,10 @@
   if (!window.MyJSPad) window.MyJSPad = MyJSPad;
 
   // A script in the body is replaced by a console while a script in the head
-  // only provides the API.
+  // (or one with data-api-only) only provides the API.
   const currentScript = document.currentScript;
-  if (currentScript && !document.head?.contains(currentScript)) {
+  const isApiOnly = currentScript?.dataset.apiOnly != null && currentScript.dataset.apiOnly !== 'false';
+  if (currentScript && !isApiOnly && !document.head?.contains(currentScript)) {
     createConsoleFromScript(currentScript);
   }
 })();

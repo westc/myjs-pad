@@ -740,13 +740,14 @@
           </div>
           <h3 class="subheading">Or create consoles with JavaScript</h3>
           <p class="section-lead">
-            Put the script in your page&rsquo;s <code>&lt;head&gt;</code> and use
+            Put the script in your page&rsquo;s <code>&lt;head&gt;</code> (or anywhere with
+            <code>data-api-only</code>) and use
             <code>MyJSPad.create()</code>, which works great with React, Vue and
             other frameworks.  Try it on the <a href="examples/api.html">API example</a>.
             Already have code blocks (eg. from Markdown)?  <code>MyJSPad.from()</code>
             turns them into consoles, as in <a href="examples/from.html">this example</a>.
           </p>
-<pre class="code-block"><code><span class="t">&lt;script</span> <span class="a">src</span>=<span class="s">"https://cdn.jsdelivr.net/npm/myjs-pad@1/dist/myjs-pad.min.js"</span><span class="t">&gt;&lt;/script&gt;</span>
+<pre class="code-block"><code><span class="t">&lt;script</span> <span class="a">src</span>=<span class="s">"https://cdn.jsdelivr.net/npm/myjs-pad@1/dist/myjs-pad.min.js"</span> <span class="a">data-api-only</span><span class="t">&gt;&lt;/script&gt;</span>
 
 const pad = MyJSPad.create({
   target: <span class="s">'#lesson'</span>,       <span class="c">// an element or a CSS selector</span>

@@ -283,11 +283,12 @@ nothing did.  Clicking the label shows or hides the code.
 
 Loading the script also provides `MyJSPad` for creating consoles from
 JavaScript (eg. in React, Vue or any page that adds content dynamically).  A
-script tag in the `<head>` only provides the API, while one in the `<body>` is
-also replaced by a console (with the code inside of it) as usual.
+script tag in the `<head>` (or one anywhere with `data-api-only`) only provides
+the API, while one in the `<body>` is also replaced by a console (with the code
+inside of it) as usual.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/myjs-pad@1/dist/myjs-pad.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/myjs-pad@1/dist/myjs-pad.min.js" data-api-only></script>
 ```
 
 ```js
