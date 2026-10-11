@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kitchen Sink - MyJS Pad</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --sidebar-bg: #f6f7f9;
+        --border: #dcdfe4;
+        --text: #1f2328;
+        --muted: #656d76;
+        --accent: #2f6feb;
+        --input-bg: #ffffff;
+        --code-bg: #eceef1;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1e1e1e;
+          --sidebar-bg: #24272b;
+          --border: #3b4048;
+          --text: #e6e6e6;
+          --muted: #9da5b0;
+          --accent: #6ea8fe;
+          --input-bg: #1b1d20;
+          --code-bg: #1b1d20;
+          color-scheme: dark;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        display: grid;
+        font: 13px/1.4 system-ui, sans-serif;
+        grid-template-columns: 300px 1fr;
+      }
+      #sidebar {
+        background-color: var(--sidebar-bg);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        padding: 14px 16px 20px;
+      }
+      #console {
+        height: 100vh;
+        min-width: 0;
+      }
+      h1 {
+        font-size: 17px;
+        margin: 0;
+      }
+      .version {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .links {
+        display: flex;
+        gap: 12px;
+        margin-top: 6px;
+      }
+      a {
+        color: var(--accent);
+      }
+      h2 {
+        border-bottom: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        margin: 18px 0 8px;
+        padding-bottom: 4px;
+        text-transform: uppercase;
+      }
+      .field {
+        align-items: center;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 96px 1fr;
+        margin: 6px 0;
+      }
+      .field > span {
+        color: var(--muted);
+      }
+      select, input[type="text"] {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        color: inherit;
+        font: inherit;
+        min-width: 0;
+        padding: 4px 6px;
+        width: 100%;
+      }
+      input[type="checkbox"] {
+        justify-self: start;
+        margin: 0;
+      }
+      .description {
+        color: var(--muted);
+        margin: 6px 0 0;
+      }
+      code {
+        font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      button {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+        padding: 4px 10px;
+      }
+      button:hover {
+        border-color: var(--accent);
+      }
+      .buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      #page-box {
+        border: 2px dashed var(--border);
+        border-radius: 6px;
+        padding: 10px;
+        transition: background-color 0.3s;
+      }
+      pre {
+        background-color: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        margin: 0;
+        overflow-x: auto;
+        padding: 8px;
+      }
+      @media (max-width: 760px) {
+        body {
+          grid-template-columns: 1fr;
+          height: auto;
+        }
+        #sidebar {
+          border-bottom: 1px solid var(--border);
+          border-right: 0;
+        }
+        #console {
+          height: 80vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="sidebar">
+      <h1>MyJS Pad Kitchen Sink</h1>
+      <div class="version" id="version">Loading&hellip;</div>
+      <div class="links">
+        <a href="../">Home</a>
+        <a href="../#examples">All examples</a>
+        <a href="https://github.com/westc/myjs-pad#readme">Docs</a>
+      </div>
+
+      <form id="options" autocomplete="off">
+        <h2>Example</h2>
+        <select name="example" id="example" aria-label="Example"></select>
+        <p class="description" id="example-description"></p>
+
+        <h2>Code</h2>
+        <label class="field">
+          <span>Runner</span>
+          <select name="runner">
+            <option value="worker">Web Worker</option>
+            <option value="window">This page</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Block type</span>
+          <select name="blockType">
+            <option value="classic">Classic</option>
+            <option value="module">Module</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Language</span>
+          <select name="language">
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Hide prefix</span>
+          <input type="text" name="hidePrefix" placeholder="None">
+        </label>
+        <label class="field">
+          <span>Show results</span>
+          <input type="checkbox" name="results" value="on">
+        </label>
+
+        <h2>Appearance</h2>
+        <label class="field">
+          <span>Theme</span>
+          <select name="theme">
+            <option value="system">Follow the system</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Layout</span>
+          <select name="layout">
+            <option value="auto">Automatic</option>
+            <option value="vertical">Editor beside</option>
+            <option value="horizontal">Editor below</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Hide empty output</span>
+          <input type="checkbox" name="hideEmptyOutput" value="on">
+        </label>
+        <label class="field">
+          <span>Word wrap</span>
+          <input type="checkbox" name="wordWrap" value="on">
+        </label>
+        <label class="field">
+          <span>Rulers</span>
+          <input type="text" name="rulers" placeholder="None">
+        </label>
+
+        <h2>Loading</h2>
+        <label class="field">
+          <span>Build</span>
+          <select name="build">
+            <option value="full">myjs-pad.full.js</option>
+            <option value="standard">myjs-pad.js</option>
+            <option value="min">myjs-pad.min.js</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Loading</span>
+          <select name="loading">
+            <option value="lazy">When scrolled into view</option>
+            <option value="eager">Right away</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Imports</span>
+          <select name="imports">
+            <option value="esm">esm.sh</option>
+            <option value="jsdelivr">jsDelivr</option>
+            <option value="off">Off (URLs only)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Libraries</span>
+          <select name="libraries">
+            <option value="unpkg">unpkg</option>
+            <option value="jsdelivr">jsDelivr</option>
+          </select>
+        </label>
+
+        <div class="buttons">
+          <button type="button" id="reload">Reload console</button>
+          <button type="button" id="reset-options">Reset options</button>
+        </div>
+      </form>
+
+      <h2>Page</h2>
+      <div id="page-box">I&rsquo;m part of this page.  Code that runs in the page can change me.</div>
+
+      <h2>Embed code</h2>
+      <pre><code id="embed-code"></code></pre>
+      <div class="buttons">
+        <button type="button" id="copy-embed">Copy</button>
+      </div>
+    </aside>
+
+    <main id="console"></main>
+
+    <!--
+      The examples.  data-options sets the "Code" options that the example
+      needs (the others go back to their defaults when it is chosen).
+    -->
+    <script type="text/x-example" id="logging" data-title="Logging &amp; value types"
+            data-description="Every kind of value, shown like the browser's console, plus format specifiers and repeated messages.  Click the arrows to expand objects.">
+      // Every console method \\
+      console.log('log', 1, 'two');
+      console.info('info');
+      console.warn('warn');
+      console.error('error');
+      console.debug('debug');
+
+      // Primitive values \\
+      console.log('a string', 42, 3.14, -0, NaN, Infinity, 123n, true, null, undefined, Symbol('sym'));
+      console.log('multi\nline\nstring');
+
+      // Objects (click the arrows to expand) \\
+      console.log({a: 1, nested: {b: [1, 2, {c: 3}]}});
+      console.log([1, 'two', {three: 3}], new Date(), /re+gex/gi);
+      console.log(new Map([['key', 'value'], [{obj: true}, [1, 2]]]), new Set([1, 'a', {}]));
+      console.log(new Uint8Array([1, 2, 3]), function namedFn() {}, () => {});
+
+      // Class instances \\
+      class Person {
+        constructor(name) { this.name = name; }
+        greet() { return `Hi, I'm ${this.name}`; }
+      }
+      class Team extends Array {}
+      console.log(new Person('Ada'), Team.from(['Ada', 'Grace']));
+      console.log(Person, Object.create(null));
+
+      // Format specifiers \\
+      console.log('%s is %d years old and %f%% done', 'Ada', 36.9, 99.5);
+      console.log('An object: %o', {a: 1});
+      console.log('%cStyled%c and %cbadges', 'color: #e8710a; font-weight: bold; font-size: 16px', '', 'color: white; background: #1a73e8; padding: 1px 6px; border-radius: 4px');
+
+      // Repeated messages are counted \\
+      for (let i = 0; i < 5; i++) console.log('Same message');
+      for (let i = 0; i < 3; i++) console.warn('Same warning');
+    </script>
+
+    <script type="text/x-example" id="table" data-title="console.table()"
+            data-description="Arrays and objects shown as tables, including only some columns.">
+      // Array of objects \\
+      console.table([{name: 'Ada', born: 1815}, {name: 'Grace', born: 1906, navy: true}]);
+
+      // Object of objects \\
+      console.table({ada: {lang: 'Analytical Engine'}, grace: {lang: 'COBOL'}});
+
+      // Mixed primitives and objects \\
+      console.table(['a', 1, {x: 1}, null]);
+
+      // Only some columns \\
+      console.table([{a: 1, b: 2, c: 3}, {a: 4, b: 5, c: 6}], ['a', 'c']);
+
+      // Array of arrays \\
+      console.table([[1, 2], [3, 4, 5]]);
+
+      // Not tabular so it is logged normally \\
+      console.table('just a string');
+    </script>
+
+    <script type="text/x-example" id="methods" data-title="More console methods &amp; results"
+            data-description="count(), time(), assert(), dir(), groups, trace() and the value of the last expression.">
+      // count() and time() \\
+      console.count();
+      console.count();
+      console.count('apples');
+      console.time('loop');
+      for (let i = 0; i < 1e5; i++);
+      console.timeEnd('loop');
+
+      // assert() and dir() \\
+      console.assert(1 + 1 === 2, 'This is not shown');
+      console.assert(1 + 1 === 3, 'Math is broken:', {expected: 3});
+      console.dir({nested: {value: 42}});
+
+      // Groups (click a group's title to collapse or expand it) \\
+      console.group('Outer group');
+      console.log('Inside the outer group');
+      console.groupCollapsed('Collapsed inner group');
+      console.log('Hidden until the group is expanded');
+      console.groupEnd();
+      console.groupEnd();
+      console.log('Back outside of the groups');
+
+      // trace() \\
+      function outer() { inner(); }
+      function inner() { console.trace('How did we get here?'); }
+      outer();
+
+      // The value of the last expression is shown \\
+      const numbers = [1, 2, 3];
+      numbers.map(n => n * 2);
+    </script>
+
+    <script type="text/x-example" id="modules" data-title="Module blocks &amp; imports" data-options='{"blockType": "module"}'
+            data-description="Each block runs as a module, so top-level await and imports work (npm packages load by name) but declarations stay in their block.">
+      // Top-level await works \\
+      const response = await fetch('data:application/json,{"hello":"world"}');
+      await response.json();
+
+      // So do imports (npm packages can be imported by name) \\
+      import {camelCase} from 'lodash-es';
+      camelCase('Hello from a module');
+
+      // Declarations stay in their block, so use globalThis to share \\
+      console.log(typeof response);
+      globalThis.shared = 'Shared through globalThis';
+
+      // Use what was shared \\
+      shared;
+    </script>
+
+    <script type="text/x-example" id="typescript" data-title="TypeScript" data-options='{"language": "typescript"}'
+            data-description="Babel removes the types (without checking them) before each block runs.  Errors point to the TypeScript code.">
+      // Interfaces and generics \\
+      interface Person { name: string; born: number }
+      const people: Person[] = [{name: 'Ada', born: 1815}, {name: 'Grace', born: 1906}];
+      function oldest<T extends Person>(list: T[]): T {
+        return list.reduce((a, b) => a.born <= b.born ? a : b);
+      }
+      oldest(people)
+
+      // Enums and classes with parameter properties \\
+      enum Role { Student, Teacher }
+      class Member {
+        constructor(public name: string, private role: Role = Role.Student) {}
+        describe(): string { return `${this.name} is a ${Role[this.role]}`; }
+      }
+      new Member('Ada', Role.Teacher).describe()
+
+      // Errors point to the TypeScript line and column \\
+      const member: Member | null = null;
+      member!.describe();
+    </script>
+
+    <script type="text/x-example" id="hidden" data-title="Hidden code" data-options='{"hidePrefix": "HIDE"}'
+            data-description="Blocks whose header starts with the hide prefix still run but are hidden.  Click a hidden block to see its code.">
+      // HIDE: Helpers (runs on load) \\
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+      const greeting = 'Hello from hidden code';
+      console.log('The first hidden block ran on load.');
+
+      // Use the hidden helpers \\
+      console.log(greeting);
+      sleep(500).then(() => console.log('Slept for 500ms'));
+
+      // HIDE \\
+      console.log('A hidden block with no label runs right after the block before it.');
+
+      // Visible again \\
+      console.log('Visible block');
+
+      // HIDE: Trailing hidden block \\
+      console.log('Trailing hidden blocks run after the last visible block.');
+    </script>
+
+    <script type="text/x-example" id="errors" data-title="Errors &amp; async code"
+            data-description="Thrown errors, syntax errors, unhandled rejections and logs that happen later.">
+      // Thrown error \\
+      throw new Error('Something went wrong');
+
+      // Reference error \\
+      notDefined();
+
+      // Syntax error \\
+      const = 5;
+
+      // Unhandled promise rejection \\
+      Promise.reject(new Error('Rejected!'));
+
+      // Async logs \\
+      (async () => {
+        for (let i = 1; i <= 3; i++) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          console.log(`Tick ${i}`);
+        }
+      })();
+    </script>
+
+    <script type="text/x-example" id="worker" data-title="Web Worker sandbox"
+            data-description="Code runs in a Web Worker so it can't touch the page.  Reset stops code that never finishes.">
+      // Top-level declarations are shared between blocks \\
+      let counter = 0;
+      var total = 10;
+
+      // Use them in a later block \\
+      counter++;
+      console.log({counter, total});
+
+      // There is no DOM in a worker \\
+      console.log(typeof document, typeof window, self.constructor.name);
+
+      // Try to escape through the relay (should be ignored) \\
+      postMessage({target: 'viewer', func: 'eval', args: ['alert("escaped!")']});
+      console.log('If no alert appeared then the relay blocked it.');
+
+      // Infinite loop (click Reset in the ⋯ menu to stop it) \\
+      while (true) {}
+    </script>
+
+    <script type="text/x-example" id="window" data-title="Running in the page" data-options='{"runner": "window"}'
+            data-description="Code runs in this page so it can use the page's globals and DOM (see the Page box).">
+      // The page's globals are available \\
+      console.log(document.title, hostGreeting);
+
+      // So is the page's DOM (look at the Page box on the left) \\
+      document.querySelector('#page-box').textContent = 'Changed by the console!';
+      document.querySelector('#page-box').style.backgroundColor = 'rgba(255, 200, 0, 0.35)';
+      document.querySelector('#page-box')
+    </script>
+
+    <script type="text/x-example" id="blank" data-title="Blank console"
+            data-description="An empty console to try anything in.">
+    </script>
+
+    <script>
+      // Used by the "Running in the page" example.
+      var hostGreeting = 'Hello from the host page';
+
+      (() => {
+        const form = document.querySelector('#options');
+        const pageBox = document.querySelector('#page-box');
+        const pageBoxHtml = pageBox.innerHTML;
+
+        const DEFAULTS = {
+          example: 'logging',
+          runner: 'worker',
+          blockType: 'classic',
+          language: 'javascript',
+          hidePrefix: '',
+          results: 'on',
+          theme: 'system',
+          layout: 'auto',
+          hideEmptyOutput: 'on',
+          wordWrap: 'off',
+          rulers: '80',
+          build: 'full',
+          loading: 'lazy',
+          imports: 'esm',
+          libraries: 'unpkg',
+        };
+        // The options that each example can set (see data-options).
+        const EXAMPLE_OPTION_NAMES = ['runner', 'blockType', 'language', 'hidePrefix'];
+        const BUILD_FILES = {full: 'myjs-pad.full.js', standard: 'myjs-pad.js', min: 'myjs-pad.min.js'};
+        const IMPORTS_URLS = {jsdelivr: 'https://cdn.jsdelivr.net/npm/{specifier}/+esm', off: ''};
+        const LIBRARIES_URLS = {jsdelivr: 'https://cdn.jsdelivr.net/npm/{name}@{version}/'};
+
+        const examples = {};
+        for (const template of document.querySelectorAll('script[type="text/x-example"]')) {
+          const {title, description, options} = template.dataset;
+          examples[template.id] = {title, description, options: JSON.parse(options || '{}'), code: template.textContent};
+          form.example.add(new Option(title, template.id));
+        }
+
+        // The options come from the query string so that the page can be
+        // reloaded (eg. to switch builds) or shared.
+        const params = new URLSearchParams(location.search);
+        const state = {};
+        for (const [name, defaultValue] of Object.entries(DEFAULTS)) {
+          const value = params.get(name);
+          const control = form.elements[name];
+          const isValid = value != null && (control.tagName !== 'SELECT' || [...control.options].some(o => o.value === value));
+          state[name] = isValid ? value : defaultValue;
+        }
+
+        function showState() {
+          for (const [name, value] of Object.entries(state)) {
+            const control = form.elements[name];
+            if (control.type === 'checkbox') control.checked = value === 'on';
+            else control.value = value;
+          }
+          document.querySelector('#example-description').textContent = examples[state.example].description;
+        }
+
+        function saveState() {
+          const query = new URLSearchParams(Object.entries(state).filter(([name, value]) => value !== DEFAULTS[name]));
+          history.replaceState(null, '', '?' + query + location.hash);
+        }
+
+        /**
+         * The options in the form of data attributes (only the ones that
+         * aren't the default).
+         */
+        function getAttributes() {
+          const attributes = {};
+          if (state.runner !== 'worker') attributes.runner = state.runner;
+          if (state.blockType !== 'classic') attributes.blockType = state.blockType;
+          if (state.language !== 'javascript') attributes.language = state.language;
+          if (state.hidePrefix) attributes.hidePrefix = state.hidePrefix;
+          if (state.results !== 'on') attributes.showResults = 'false';
+          if (state.theme !== 'system') attributes.theme = state.theme;
+          if (state.layout !== 'auto') attributes.dividerOrient = state.layout;
+          if (state.hideEmptyOutput !== 'on') attributes.hideEmptyOutput = 'false';
+          if (state.wordWrap === 'on') attributes.wordWrap = 'true';
+          if (state.rulers !== DEFAULTS.rulers) attributes.rulers = state.rulers;
+          if (state.loading !== 'lazy') attributes.loading = state.loading;
+          if (state.imports in IMPORTS_URLS) attributes.importsUrl = IMPORTS_URLS[state.imports];
+          if (state.libraries in LIBRARIES_URLS) attributes.librariesUrl = LIBRARIES_URLS[state.libraries];
+          return attributes;
+        }
+
+        function showEmbedCode(attributes) {
+          const escapeAttribute = value => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+          const lines = Object.entries(attributes).map(([name, value]) =>
+            `        data-${name.replace(/[A-Z]/g, c => '-' + c.toLowerCase())}="${escapeAttribute(value)}"`
+          );
+          document.querySelector('#embed-code').textContent = [
+            '<script src="https://cdn.jsdelivr.net/npm/myjs-pad@1/dist/myjs-pad.min.js"',
+            ...lines,
+          ].join('\n') + '>\n  // Your code \\\\\n</' + 'script>';
+        }
+
+        let pad;
+        function createConsole() {
+          pad?.destroy();
+          pageBox.innerHTML = pageBoxHtml;
+          pageBox.style.backgroundColor = '';
+          const attributes = getAttributes();
+          showEmbedCode(attributes);
+          pad = MyJSPad.create({target: '#console', code: examples[state.example].code, ...attributes});
+        }
+
+        form.addEventListener('change', evt => {
+          const {name} = evt.target;
+          const control = form.elements[name];
+          state[name] = control.type === 'checkbox' ? (control.checked ? 'on' : 'off') : control.value;
+          // An example sets the options that it needs.
+          if (name === 'example') {
+            for (const optionName of EXAMPLE_OPTION_NAMES) {
+              state[optionName] = examples[state.example].options[optionName] ?? DEFAULTS[optionName];
+            }
+          }
+          showState();
+          saveState();
+          // A different build means loading a different script.
+          if (name === 'build') location.reload();
+          else createConsole();
+        });
+        // Typing a hide prefix doesn't recreate the console until it changes.
+        form.addEventListener('submit', evt => evt.preventDefault());
+
+        document.querySelector('#reload').addEventListener('click', createConsole);
+        document.querySelector('#reset-options').addEventListener('click', () => {
+          const needsReload = state.build !== DEFAULTS.build;
+          Object.assign(state, DEFAULTS, {example: state.example}, examples[state.example].options);
+          showState();
+          saveState();
+          if (needsReload) location.reload();
+          else createConsole();
+        });
+        document.querySelector('#copy-embed').addEventListener('click', async evt => {
+          await navigator.clipboard.writeText(document.querySelector('#embed-code').textContent);
+          evt.target.textContent = 'Copied!';
+          setTimeout(() => evt.target.textContent = 'Copy', 1500);
+        });
+
+        showState();
+
+        // In the head the script only provides MyJSPad.
+        const script = document.createElement('script');
+        script.src = `../dist/${BUILD_FILES[state.build]}`;
+        script.onload = () => {
+          document.querySelector('#version').textContent = `v${MyJSPad.version} · ${BUILD_FILES[state.build]}`;
+          createConsole();
+        };
+        script.onerror = () => {
+          document.querySelector('#version').textContent = `Couldn't load ${script.src} (run npm run build first).`;
+        };
+        document.head.append(script);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "name": "myjs-pad",
+  "version": "1.0.0",
+  "description": "A simple way to embed a JavaScript console on your website.",
+  "unpkg": "dist/myjs-pad.min.js",
+  "jsdelivr": "dist/myjs-pad.min.js",
+  "types": "dist/myjs-pad.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "gulp build",
+    "dev": "gulp dev",
+    "start": "gulp",
+    "test": "npm run build && node test/run.js",
+    "release": "node scripts/release.js",
+    "record-demo": "node scripts/record-demo.js",
+    "og-image": "node scripts/make-og-image.js",
+    "purge-cdn": "node scripts/purge-cdn.js",
+    "version": "npm run build && node scripts/update-changelog.js && git add dist CHANGELOG.md",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/westc/myjs-pad.git"
+  },
+  "keywords": [
+    "JS Console",
+    "Terminal"
+  ],
+  "author": "Chris West",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/westc/myjs-pad/issues"
+  },
+  "homepage": "https://westc.github.io/myjs-pad/",
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "browser-sync": "^3.0.4",
+    "clean-css": "^5.3.3",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.4",
+    "gulp-uglify": "^3.0.2",
+    "html-minifier": "^4.0.0",
+    "playwright-core": "^1.61.1",
+    "terser": "^5.26.0"
+  }
+}
