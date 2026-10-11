@@ -6,7 +6,12 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.0.0] - YYYY-MM-DD
+### Added
+
+- `data-api-only` on the script tag makes it only provide the API (no
+  console is made), even when the script is in the `<body>`.
+
+## [1.0.0] - 2026-10-11
 
 - First release as MyJS Pad.  It was previously published as
   [yourjs-box](https://www.npmjs.com/package/yourjs-box) (up to 1.11.1).
