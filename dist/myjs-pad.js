@@ -1,4 +1,4 @@
-/*! myjs-pad v1.0.0 | (c) 2023-present Chris West | MIT License | https://github.com/westc/myjs-pad */
+/*! myjs-pad v1.1.0 | (c) 2023-present Chris West | MIT License | https://github.com/westc/myjs-pad */
 (() => {
   /**
    * Viewer IFRAME's CSS code
@@ -9,7 +9,7 @@
    * Information about this package (eg. its version).
    * @type {{name: string, version: string, homepage: string, repoUrl: string, bugsUrl: string}}
    */
-  const PACKAGE_INFO = {"name":"myjs-pad","version":"1.0.0","homepage":"https://westc.github.io/myjs-pad/","repoUrl":"https://github.com/westc/myjs-pad","bugsUrl":"https://github.com/westc/myjs-pad/issues"};
+  const PACKAGE_INFO = {"name":"myjs-pad","version":"1.1.0","homepage":"https://westc.github.io/myjs-pad/","repoUrl":"https://github.com/westc/myjs-pad","bugsUrl":"https://github.com/westc/myjs-pad/issues"};
   /**
    * Viewer IFRAME's HTML code
    * @type {string}
